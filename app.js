@@ -1,6 +1,60 @@
 //BUDGET CONTROLLER
 let budgetController = (function () {
-    //Some text
+    //Create expense constructor
+    let Expense = function (id, description, expenseValue) {
+        this.id = id;
+        this.description = description;
+        this.expenseValue = expenseValue;
+    };
+
+    //Create income constructor
+    let Income = function (id, description, incomeValue) {
+        this.id = id;
+        this.description = description;
+        this.incomeValue = incomeValue;
+    };
+
+    let data = {
+        allItems: {
+            exp: [],
+            inc: [],
+
+        },
+        total: {
+            exp: 0,
+            inc: 0
+        }
+    };
+
+    return{
+        addItem: function (type, description, value) {
+            let item, ID;
+
+            // Create ID
+            if(data.allItems[type].length > 0){
+                ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+            }else{
+                ID = 0;
+            }
+
+            //Create new item
+            if(type === 'exp'){
+                item = new Expense(ID, description, value);
+            }else if(type === 'inc'){
+                item = new Income(ID, description, value);
+            }
+
+            //Push the item to the data
+            data.allItems[type].push(item);
+
+            return item;
+        },
+        //Testing function
+        testing: function () {
+            console.log(data);
+        }
+    };
+
 
 })();
 
@@ -16,7 +70,7 @@ let UIController = (function () {
     return {
         getInput: function () {
             return {
-                sign: document.querySelector(DOMStrings.sign).value,
+                type: document.querySelector(DOMStrings.sign).value,
                 description: document.querySelector(DOMStrings.description).value,
                 value: document.querySelector(DOMStrings.value).value
             }
@@ -45,9 +99,10 @@ let controller = (function (budgetCtrl, UICtrl) {
     let ctrlAddItem = function () {
         //1. Get the field input data
         let input = UIController.getInput();
-        console.log(input);
 
         //2. Add the item to the budget controller
+        let newItem = budgetController.addItem(input.type, input.description, input.value);
+        budgetController.testing();
 
         //3. Add the item to the UI
 
